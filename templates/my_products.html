@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>My Products</h2>
+    {% if user_products %}
+        <ul>
+        {% for product in user_products %}
+            <li>{{ product.title }} - ${{ product.price }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't posted any products yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

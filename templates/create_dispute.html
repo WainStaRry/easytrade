@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Create Dispute for Order #{{ order.id }}</h3>
+                </div>
+                <div class="card-body">
+                    <form id="disputeForm" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="reason">Reason for Dispute</label>
+                            <select class="form-control" id="reason" name="reason" required>
+                                <option value="">Select a reason...</option>
+                                <option value="item_not_received">Item Not Received</option>
+                                <option value="item_not_as_described">Item Not as Described</option>
+                                <option value="wrong_item">Wrong Item Received</option>
+                                <option value="damaged_item">Item Damaged on Arrival</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Detailed Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="evidence">Evidence (Optional)</label>
+                            <input type="file" class="form-control-file" id="evidence" name="evidence" multiple>
+                            <small class="text-muted">You can upload images or documents as evidence</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Dispute</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('disputeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('/api/disputes/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.id) {
+            alert('Dispute submitted successfully');
+            window.location.href = '/disputes/' + data.id;
+        } else {
+            alert('Failed to submit dispute: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to submit dispute. Please try again.');
+    });
+});
+</script>
+{% endblock %}

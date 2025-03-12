@@ -1,0 +1,19 @@
+#首先修改.env 文件， 随便建个mysql 数据库， 设置用户名密码之类的
+python -m venv venv
+
+venv\Scripts\activate  # cmd输入
+
+pip install -r requirements.txt
+
+#迁移数据库
+python manage.py makemigrations
+python manage.py migrate
+
+
+
+#创建超级用户管理员
+python manage.py createsuperuser  # 可选
+
+
+#启动
+python manage.py runserver

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Filter Reviews</h5>
+                </div>
+                <div class="card-body">
+                    <select class="form-control" id="productFilter">
+                        <option value="">All Products</option>
+                        {% for product in products %}
+                        <option value="{{ product.id }}">{{ product.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h2>Latest Reviews</h2>
+            <div class="reviews-container">
+                {% for review in reviews %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5 class="card-title">
+                                    <a href="{% url 'product_detail' review.product.id %}">{{ review.product.name }}</a>
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Reviewed by {{ review.reviewer.username }}</h6>
+                                <div class="stars">
+                                    {% for i in "12345"|make_list %}
+                                    <span class="star {% if forloop.counter <= review.rating %}filled{% endif %}">★</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <small class="text-muted">{{ review.created_at|date:"Y-m-d H:i" }}</small>
+                        </div>
+                        <p class="card-text mt-2">{{ review.comment }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert alert-info">
+                    No reviews yet. Be the first to review!
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加产品筛选的 JavaScript -->
+<script>
+document.getElementById('productFilter').addEventListener('change', function() {
+    const productId = this.value;
+    if (productId) {
+        window.location.href = `/product/${productId}/reviews/`;
+    } else {
+        window.location.href = '/reviews/';
+    }
+});
+</script>
+{% endblock %}

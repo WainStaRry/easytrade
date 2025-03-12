@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Make an Offer for {{ product.title }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="product-info mb-4">
+                        <p>Current Price: ${{ product.price }}</p>
+                        <p>Seller: {{ product.seller.username }}</p>
+                    </div>
+                    <form id="offerForm">
+                        <div class="form-group">
+                            <label for="offerPrice">Your Offer Price ($)</label>
+                            <input type="number" class="form-control" id="offerPrice" name="offer_price" 
+                                   step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message to Seller (Optional)</label>
+                            <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Offer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('offerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        product: {{ product.id }},
+        offer_price: document.getElementById('offerPrice').value,
+        message: document.getElementById('message').value
+    };
+
+    fetch('/api/offers/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.id) {
+            alert('Offer submitted successfully!');
+            window.location.href = '/offers/my-offers/';
+        } else {
+            alert('Failed to submit offer: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to submit offer. Please try again.');
+    });
+});
+</script>
+{% endblock %}

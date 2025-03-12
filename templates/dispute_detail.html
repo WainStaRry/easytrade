@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h3>Dispute Details #{{ dispute.id }}</h3>
+            <span class="badge {% if dispute.status == 'open' %}badge-warning
+                          {% elif dispute.status == 'resolved' %}badge-success
+                          {% else %}badge-danger{% endif %}">
+                {{ dispute.status|title }}
+            </span>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5>Order Information</h5>
+                    <p>
+                        <strong>Order ID:</strong> #{{ dispute.order.id }}<br>
+                        <strong>Product:</strong> {{ dispute.order.product.title }}<br>
+                        <strong>Price:</strong> ${{ dispute.order.total_amount }}<br>
+                        <strong>Date:</strong> {{ dispute.order.created_at|date:"Y-m-d H:i" }}
+                    </p>
+
+                    <h5>Dispute Information</h5>
+                    <p>
+                        <strong>Filed by:</strong> {{ dispute.complainant.username }}<br>
+                        <strong>Filed on:</strong> {{ dispute.created_at|date:"Y-m-d H:i" }}<br>
+                        <strong>Reason:</strong> {{ dispute.reason|title }}<br>
+                    </p>
+
+                    <div class="description mt-3">
+                        <h5>Description</h5>
+                        <p>{{ dispute.description }}</p>
+                    </div>
+
+                    {% if dispute.evidence.all %}
+                    <div class="evidence mt-3">
+                        <h5>Evidence</h5>
+                        <div class="row">
+                            {% for evidence in dispute.evidence.all %}
+                            <div class="col-md-4 mb-3">
+                                <img src="{{ evidence.file.url }}" class="img-fluid" alt="Evidence">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if user.is_staff %}
+                            <button class="btn btn-success btn-block mb-2" onclick="updateStatus('resolved')">
+                                Mark as Resolved
+                            </button>
+                            <button class="btn btn-danger btn-block" onclick="updateStatus('rejected')">
+                                Reject Dispute
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateStatus(status) {
+    if (!confirm(`Are you sure you want to mark this dispute as ${status}?`)) {
+        return;
+    }
+
+    fetch(`/api/disputes/${dispute.id}/update_status/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ status: status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Failed to update status: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to update status. Please try again.');
+    });
+}
+</script>
+{% endblock %}

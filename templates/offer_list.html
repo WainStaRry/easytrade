@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link {% if view == 'received' %}active{% endif %}" href="{% url 'offers_received' %}">
+                Offers Received
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if view == 'sent' %}active{% endif %}" href="{% url 'offers_sent' %}">
+                Offers Sent
+            </a>
+        </li>
+    </ul>
+
+    <div class="offers-list">
+        {% for offer in offers %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="card-title">
+                            <a href="{% url 'product_detail' offer.product.id %}">{{ offer.product.title }}</a>
+                        </h5>
+                        <p class="card-text">
+                            <strong>Original Price:</strong> ${{ offer.product.price }}<br>
+                            <strong>Offer Price:</strong> ${{ offer.offer_price }}<br>
+                            <strong>Status:</strong> 
+                            <span class="badge {% if offer.offer_status == 'accepted' %}badge-success
+                                           {% elif offer.offer_status == 'rejected' %}badge-danger
+                                           {% else %}badge-warning{% endif %}">
+                                {{ offer.offer_status|title }}
+                            </span>
+                        </p>
+                        {% if offer.message %}
+                        <p class="card-text"><small>Message: {{ offer.message }}</small></p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 text-right">
+                        {% if view == 'received' and offer.offer_status == 'pending' %}
+                        <button class="btn btn-success mr-2" onclick="handleOffer('accept', {{ offer.id }})">
+                            Accept
+                        </button>
+                        <button class="btn btn-danger" onclick="handleOffer('reject', {{ offer.id }})">
+                            Reject
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                {% if view == 'received' %}
+                    From: {{ offer.buyer.username }}
+                {% else %}
+                    To: {{ offer.product.seller.username }}
+                {% endif %}
+                | {{ offer.created_at|date:"Y-m-d H:i" }}
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">
+            No offers found.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function handleOffer(action, offerId) {
+    if (!confirm(`Are you sure you want to ${action} this offer?`)) {
+        return;
+    }
+
+    fetch(`/api/offers/${offerId}/${action}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+            location.reload();
+        } else {
+            throw new Error(data.error || 'Operation failed');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Operation failed. Please try again.');
+    });
+}
+</script>
+{% endblock %}
