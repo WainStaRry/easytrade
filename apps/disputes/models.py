@@ -2,6 +2,7 @@ from django.db import models
 from apps.orders.models import Order
 from apps.users.models import CustomUser
 
+<<<<<<< HEAD
 class DisputeEvidence(models.Model):
     dispute = models.ForeignKey('Dispute', on_delete=models.CASCADE, related_name='evidence')
     file = models.FileField(upload_to='dispute_evidence/')
@@ -40,3 +41,14 @@ class Dispute(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+=======
+class Dispute(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='disputes')
+    complainant = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='disputes')
+    reason = models.TextField()
+    status = models.CharField(max_length=20, default='open')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Dispute for Order #{self.order.id} by {self.complainant.username}"
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0

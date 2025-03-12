@@ -1,11 +1,15 @@
+<<<<<<< HEAD
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+=======
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Offer
 from .serializers import OfferSerializer
 
+<<<<<<< HEAD
 @login_required
 def make_offer(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -27,11 +31,15 @@ def offers_sent(request):
         'view': 'sent'
     })
 
+=======
+# Viewset for handling offers and seller responses
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
 class OfferViewSet(viewsets.ModelViewSet):
     serializer_class = OfferSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+<<<<<<< HEAD
         user = self.request.user
         return Offer.objects.filter(
             models.Q(buyer=user) | models.Q(product__seller=user)
@@ -68,3 +76,24 @@ class OfferViewSet(viewsets.ModelViewSet):
         offer.offer_status = 'rejected'
         offer.save()
         return Response({'message': 'Offer rejected successfully'})
+=======
+        return Offer.objects.all()
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def accept(self, request, pk=None):
+        offer = self.get_object()
+        if request.user == offer.product.seller:
+            offer.offer_status = 'accepted'
+            offer.save()
+            return Response({'message': 'Offer accepted'})
+        return Response({'error': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def reject(self, request, pk=None):
+        offer = self.get_object()
+        if request.user == offer.product.seller:
+            offer.offer_status = 'rejected'
+            offer.save()
+            return Response({'message': 'Offer rejected'})
+        return Response({'error': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0

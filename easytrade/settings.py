@@ -28,7 +28,10 @@ DATABASES = {
     }
 }
 
+<<<<<<< HEAD
 # 删除以下内容：
+=======
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -49,15 +52,22 @@ INSTALLED_APPS = [
     'apps.payments',
 ]
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+<<<<<<< HEAD
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # 确保这行存在
+=======
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -106,6 +116,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST_USER = 'noreply@easytrade.com'
 
 REST_FRAMEWORK = {
+<<<<<<< HEAD
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
     ],
@@ -124,4 +135,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+=======
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}
+
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

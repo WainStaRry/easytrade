@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,12 +9,20 @@ from .models import Dispute, DisputeEvidence
 from .serializers import DisputeSerializer, DisputeEvidenceSerializer
 from apps.orders.models import Order
 
+=======
+from rest_framework import viewsets, permissions
+from .models import Dispute
+from .serializers import DisputeSerializer
+
+# Viewset for handling disputes; admins see all, others see their own.
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
 class DisputeViewSet(viewsets.ModelViewSet):
     serializer_class = DisputeSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
+<<<<<<< HEAD
         queryset = Dispute.objects.all()
         
         if not user.is_staff:
@@ -131,3 +140,8 @@ def create_dispute(request, order_id):
     if request.user != order.buyer:
         raise PermissionDenied("Only the buyer can create a dispute")
     return render(request, 'create_dispute.html', {'order': order})
+=======
+        if user.is_staff:
+            return Dispute.objects.all()
+        return Dispute.objects.filter(complainant=user)
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0

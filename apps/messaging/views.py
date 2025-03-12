@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from rest_framework import viewsets, permissions, status
@@ -7,6 +8,13 @@ from .models import Message
 from .serializers import MessageSerializer
 from apps.users.models import CustomUser
 
+=======
+from rest_framework import viewsets, permissions
+from .models import Message
+from .serializers import MessageSerializer
+
+# Viewset for messaging; users see messages they sent or received
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -14,6 +22,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return Message.objects.filter(sender=user) | Message.objects.filter(receiver=user)
+<<<<<<< HEAD
 
     def perform_create(self, serializer):
         serializer.save(sender=self.request.user)
@@ -139,3 +148,5 @@ def delete_conversation(request, user_id):
         return JsonResponse({'status': 'success'})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+=======
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0

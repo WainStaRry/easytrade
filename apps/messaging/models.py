@@ -6,6 +6,7 @@ class Message(models.Model):
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='received_messages')
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+<<<<<<< HEAD
     is_read = models.BooleanField(default=False)
     subject = models.CharField(max_length=200, blank=True)
     related_product = models.ForeignKey('products.Product', on_delete=models.SET_NULL, null=True, blank=True)
@@ -15,3 +16,8 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['-timestamp']
+=======
+
+    def __str__(self):
+        return f"Message from {self.sender} to {self.receiver} at {self.timestamp}"
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0

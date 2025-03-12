@@ -8,11 +8,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from apps.users.views import account_settings
 from apps.users.views import user_profile
+<<<<<<< HEAD
 from apps.messaging.views import MessageViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'messages', MessageViewSet, basename='messages')
+=======
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
 
 
 urlpatterns = [
@@ -25,7 +28,11 @@ urlpatterns = [
     path('api/users/', include('apps.users.urls')),
     path('api/products/', include('apps.products.urls')),
     path('api/orders/', include('apps.orders.urls')),
+<<<<<<< HEAD
     path('api/messages/', include('apps.messaging.urls')),  # 添加消息系统的 URL
+=======
+    path('api/messaging/', include('apps.messaging.urls')),
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
     path('api/cart/', include('apps.cart.urls')),
     path('api/reviews/', include('apps.reviews.urls')),
     path('api/offers/', include('apps.offers.urls')),
@@ -47,6 +54,7 @@ urlpatterns = [
     path('post-product/', include('apps.products.urls_post')),
     path('about/', TemplateView.as_view(template_name="about.html"), name='about'),
     path('payment/', TemplateView.as_view(template_name="payment.html"), name='payment'),
+<<<<<<< HEAD
     path('account-settings/', account_settings, name='account_settings'),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),  # 添加这行
@@ -55,3 +63,7 @@ urlpatterns = [
 
     
 
+=======
+    path('account-settings/', account_settings, name='account_settings')
+    ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0

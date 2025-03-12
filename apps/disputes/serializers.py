@@ -1,4 +1,5 @@
 from rest_framework import serializers
+<<<<<<< HEAD
 from .models import Dispute, DisputeEvidence
 
 class DisputeEvidenceSerializer(serializers.ModelSerializer):
@@ -24,3 +25,11 @@ class DisputeSerializer(serializers.ModelSerializer):
             'product_name': obj.order.product.title,
             'total_amount': str(obj.order.total_amount)
         }
+=======
+from .models import Dispute
+
+class DisputeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dispute
+        fields = '__all__'
+>>>>>>> 1f1ec4b928cddfc092349168b2cf9870c33751a0
